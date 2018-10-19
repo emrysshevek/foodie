@@ -109,12 +109,15 @@ angular.module('Bacon', ['ui.router'])
                     $scope.title = topic.getUpper();
                     if ($scope.title === 'BACON') {
                         $("body").addClass("secretBaconMode");
+                        document.getElementById("secretBaconMusic").play();
                         // $("#secretBacon").play();
-                        // $(".header").add('<audio id="secretBacon" autoplay loop><source src="../bacon_song.mp3" type="audio/mpeg"></audio>');
+                        // $(".header").add('<audio class="secretBaconMusic" autoplay loop><source src="../bacon_song.mp3" type="audio/mpeg"></audio>');
                     }
                     else {
                         $("body").removeClass("secretBaconMode");
-                        // $("#secretBacon").remove();
+                        document.getElementById("secretBaconMusic").pause();
+                        // $(".secretBaconMusic ").pause();
+                        // $(".secretBaconMusic").remove();
                     }
                     $scope.searchContent = "";
                 }
