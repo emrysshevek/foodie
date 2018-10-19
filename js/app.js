@@ -2,6 +2,10 @@ angular.module('Bacon', ['ui.router'])
     .factory('topic', function() {
         var value = 'FOODIE';
 
+        var gSynced = true;
+        var rSynced = true;
+        var vSynced = true;
+
         function getUpper() {
             return value.toUpperCase();
         }
@@ -14,7 +18,52 @@ angular.module('Bacon', ['ui.router'])
             value = newTopic;
         }
 
-        return { value: value, getUpper: getUpper, getLower: getLower, setValue: setValue }
+        function unsync() {
+            gSynced = false;
+            rSynced = false;
+            vSynced = false;
+            console.log("unsynced sections");
+        }
+
+        function gifsSynced() {
+            return gSynced;
+        }
+
+        function syncGifs() {
+            gSynced = true;
+        }
+
+        function recipesSynced() {
+            return rSynced;
+        }
+
+        function syncRecipes() {
+            rSynced = true;
+        }
+
+        function videosSynced() {
+            return vSynced;
+        }
+
+        function syncVideos() {
+            vSynced = true;
+        }
+
+        return {
+            value: value,
+            recipesSynced: recipesSynced,
+            videosSynced: videosSynced,
+            getUpper: getUpper,
+            getLower: getLower,
+            setValue: setValue,
+            unsync: unsync,
+            syncGifs: syncGifs,
+            gifsSynced: gifsSynced,
+            syncRecipes: syncRecipes,
+            recipesSynced: recipesSynced,
+            syncVideos: syncVideos,
+            videosSynced: videosSynced
+        }
     })
     .config([
         '$stateProvider',
@@ -55,6 +104,8 @@ angular.module('Bacon', ['ui.router'])
                 var search = $scope.searchContent;
                 if (search != '') {
                     topic.setValue(search);
+                    topic.unsync();
+                    console.log("gifs status: " + topic.gifsSynced());
                     $scope.title = topic.getUpper();
                     if ($scope.title === 'BACON') {
                         $("body").addClass("secretBaconMode");
@@ -80,11 +131,13 @@ angular.module('Bacon', ['ui.router'])
         '$scope',
         '$http',
         'topic',
-        function($scope, $http, topic) {
+        '$interval',
+        function($scope, $http, topic, $interval) {
             $scope.recipes = []
 
-
             $scope.getRecipes = function() {
+                $scope.recipes = [];
+
                 var key = '437e4d8ac9d7dec6e9a99ba5683f32b3';
                 var search = topic.getLower();
                 var url = "https://www.food2fork.com/api/search?key=" + key + "&q=" + search;
@@ -98,6 +151,15 @@ angular.module('Bacon', ['ui.router'])
                     }
                 });
             };
+
+            $interval(function() {
+                if (!topic.recipesSynced()) {
+                    console.log("status: " + topic.recipesSynced());
+                    topic.syncRecipes();
+                    $scope.getRecipes();
+                }
+            }, 1000);
+
         }
     ])
     .controller('VideosCtrl', [
@@ -122,34 +184,41 @@ angular.module('Bacon', ['ui.router'])
                     console.log($scope.video);
                 });
             };
+
         }
     ])
     .controller('GifsCtrl', [
         '$scope',
         '$http',
+        '$interval',
         'topic',
-        function($scope, $http, topic) {
+        function($scope, $http, $interval, topic) {
             $scope.gifs = [];
 
             var key = "Q0e1pWbSF67lDIHC2vbCLnD63cYU4I4V";
-            var search = topic.getLower();
 
             $scope.getGifs = function() {
+                $scope.gifs = [];
+                var search = topic.getLower();
                 var url = "http://api.giphy.com/v1/gifs/search?q=" + search + "&api_key=" + key + "&limit=20";
                 console.log(url);
-                $http.get(url).then(function(response) {
-                    console.log(response);
-                });
 
                 $http.get(url).then(function(response) {
                     console.log(response);
                     var responseGifs = response.data.data;
-                    console.log(responseGifs);
                     for (i in responseGifs) {
-                        console.log(responseGifs[i]);
                         $scope.gifs.push({ source: responseGifs[i].images.original.url });
                     }
                 });
             }
+
+            $interval(function() {
+                if (!topic.gifsSynced()) {
+                    console.log("status: " + topic.gifsSynced());
+                    topic.syncGifs();
+                    $scope.getGifs();
+                }
+            }, 1000);
+
         }
     ]);

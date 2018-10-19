@@ -56,15 +56,25 @@
     </div>
 
     <script type="text/ng-template " id="/home.html ">
-        <h1>Home</h1>
+        <div class="home">
+            <div class="h-100 row align-middle">
+                <div class="col">
+                    <h1>Welcome to Foodie</h1>
+                    <h5>Search for any kind of food and find recipes, gifs, and videos!</h5>
+                    <p><small class="text-muted">(You can actually search for anything you want. I doubt you'll find any recipes for cars or houses or whatever, but if that's what you want to do, be my guest)</small></p>
+                </div>
+            </div>
+        </div>
+
     </script>
 
     <script type=" text/ng-template " id="/gifs.html ">
-        <h1 ng-init="getGifs()">GIFS</h1>
-        <div id="gifsBody">
+        <h1>GIFS</h1>
+
+        <div id="gifsBody" ng-init="getGifs()">
             <div class="card-columns" class="gifsList">
                 <div class="card" ng-repeat="gif in gifs">
-                    <img class="card-img-top" src="{{gif.source}}" alt="{{gif.source}}">
+                    <a href="{{gif.source}}"><img class="card-img-top" src="{{gif.source}}" alt="{{gif.source}}"></a>
                 </div>
             </div>
         </div>
@@ -73,30 +83,27 @@
     <script type="text/ng-template " id="/videos.html ">
         <h1>VIDEOS</h1>
         <div class="videosBody">
-            <button type="button " class="btn btn-primary btn-lg btn-block" ng-click="getRandomVideo()">GET A RANDOM VIDEO</button>
+            <button type="button" id="videoButton" class="btn btn-primary btn-lg btn-block" ng-click="getRandomVideo()">GET A RANDOM VIDEO</button>
+            <div class="spacer"></div>
             <iframe id="videoBox" ng-if="video!=''" width="560" height="315" src="{{video}}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
     </script>
 
     <script type="text/ng-template " id="/recipes.html">
         <h1 ng-init="getRecipes()">RECIPES</h1>
+
         <div id="recipeBody">
             <div class="card-columns" class="recipeList">
                 <div class="card" ng-repeat="recipe in recipes">
-                    <img class="card-img-top" src="{{recipe.img}}" alt="{{recipe.img}}">
+                    <a href={{recipe.img}}><img class="card-img-top" src="{{recipe.img}}" alt="{{recipe.img}}"></a>
                     <div class="card-body ">
                         <h5 class="card-title ">{{recipe.title}}</h5>
-                        <p class="card-text "><small class="text-muted ">{{recipe.link}}</small></p>
+                        <p class="card-text "><a href={{recipe.link}}><small class="text-muted ">{{recipe.link}}</small></a></p>
                     </div>
                 </div>
             </div>
         </div>
     </script>
-
-    <!--recipe api: https://www.food2fork.com/about/api-->
-    <!--recipe key:437e4d8ac9d7dec6e9a99ba5683f32b3-->
-    <!--giphy api key: Q0e1pWbSF67lDIHC2vbCLnD63cYU4I4V-->
-    <!--youtube key: AIzaSyCJxc0uYD6_XuEZ_m_s3cu111O8XfmNHoM-->
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
